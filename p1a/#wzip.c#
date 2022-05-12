@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdbool.h>
+
+
+void removeNewLine(char* sentence){
+  size_t slen = strlen(sentence);
+  if(slen > 0 && sentence[slen-1] == '\n'){
+    sentence[slen-1]='\0';
+  }
+}
+
+void checkValidity(char* buffer){
+  if(buffer == NULL){
+    perror("Unable to allocate buffer\n");
+    exit(1);
+  }
+}
+
+FILE* open(char* filePath){
+  FILE *fp = fopen(filePath,"r");
+  if(fp == NULL){
+    printf("can't able to open the file\n");
+    exit(1);
+  }
+  return fp;
+}
+
+
+
+bool findWord(char* sentence,char* wordToSearch){
+  int slen=strlen(sentence);
+  char *sent=(char*)malloc(sizeof(char)*slen);
+  for(int i=0;i<slen;++i){
+    sent[i]=sentence[i];
+  }
+  char* token = strtok(sent," ");
+  while(token != NULL){
+    if(strlen(wordToSearch)<=strlen(token)){
+      for(int i=0;i<=strlen(token)-strlen(wordToSearch);++i){
+        bool isFound=true;
+        for(int j=i;j<i+strlen(wordToSearch);++j){
+          if(wordToSearch[j-i] != token[j]){isFound=0;break;}
+        }
+        if(isFound) return true;
+      }
+    }
+    token = strtok(NULL," ");
+  }
+   
+  while(!feof(fp)){
+    characters=getline(&buffer,&bufsize,fp);
+    removeNewLine(buffer);
+    if(findWord(buffer,wordToSearch)){
+      printf("%s\n",buffer);
+    }
+  }
+}
+
+int main(int argc,char* argv[]){
+  if(argc==1){
+    perror("usage ./a.out file_name\n");
+    exit(1);
+  }
+  if(argc==2){
+    printf("");
+    return 0;
+  }
+  FILE *fp = open(argv[1]);
+  searchFile(fp,argv[2]);
+  fclose(fp);
+}
